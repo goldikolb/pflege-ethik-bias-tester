@@ -1,0 +1,6 @@
+run: deterministic
+params:
+  temperature: 0.0
+  top_p: 0.1
+  max_tokens: 400
+  system_style: neutral

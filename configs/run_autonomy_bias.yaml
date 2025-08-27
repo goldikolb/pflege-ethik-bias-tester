@@ -1,0 +1,6 @@
+run: autonomy_bias
+params:
+  temperature: 0.2
+  top_p: 0.9
+  max_tokens: 400
+  system_style: autonomy

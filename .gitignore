@@ -1,0 +1,25 @@
+# Virtualenv
+myenv/
+
+# Environment files
+.env
+.env.*
+!.env.example
+ 
+# Python: Bytecode/Cache
+__pycache__/
+*.pyc
+*.pyo
+*.pyd
+*.egg-info/
+
+# Tools/Interpreter
+.python-version
+
+# macOS/Editor
+.DS_Store
+.vscode/
+.idea/
+
+# Outputs (Ergebnisse). Entfernen, wenn Ergebnisse versioniert werden sollen
+outputs/

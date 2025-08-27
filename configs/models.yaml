@@ -1,0 +1,27 @@
+# Modelle und Adapter-Zuordnung
+models:
+  - name: GPT-5
+    provider: openai
+    adapter: openai_gpt
+  - name: Claude Sonnet 4.0
+    provider: anthropic
+    adapter: anthropic_claude
+  - name: Grok
+    provider: xai
+    adapter: xai_grok
+  - name: Mistral Medium 7B
+    provider: local
+    adapter: local_mistral
+  # - name: Teuken 7B
+  #   provider: local
+  #   adapter: local_teuken
+  #   params:
+  #     temperature: 0.7
+  #     top_p: 0.95
+  #     max_tokens: 400
+
+# Separates Judge-Modell (hier rein logisch getrennt, im Code deterministisch)
+judge:
+  name: Judge-Det
+  provider: local
+  temperature: 0.0
