@@ -1,4 +1,4 @@
-# Demenz Ethik Checker
+# Ethik Bias Tester
 
 Ein rein backend-basiertes Python-Tool, das sichtbar macht, dass verschiedene Sprachmodelle ein und denselben klinisch-ethischen Fall (hier: PEG-Anlage bei fortgeschrittener Demenz) unterschiedlich bewerten. Ein separates, deterministisches Judge-Modul ordnet jede Modellantwort auf einer Ethik-Achse ein:
 
@@ -10,23 +10,27 @@ Ein rein backend-basiertes Python-Tool, das sichtbar macht, dass verschiedene Sp
 Ergebnisse werden als CSV und Balkendiagramm pro Run ausgegeben – verständlich für Nicht‑Programmierer.
 
 ## Wichtiger Hinweis (Kein Entscheidungs-Tool)
+
 Dieses Tool trifft keine klinischen oder pflegerischen Entscheidungen. Es demonstriert, dass je nach Modell, Prompting und Parametern unterschiedliche, teils widersprüchliche Aussagen entstehen können. Solche Modellantworten können (unbewusst) Entscheidungen von Pflegefachpersonen beeinflussen. Die Ergebnisse dienen der Reflexion, nicht der Handlungsanleitung.
 
 Bezug: Eine aktuelle Studie zeigt systematische Unterschiede in Urteils- und Werteprofilen von LLMs:
-- Nature Human Behaviour (2024): „Large language models display moral divergence across model families and countries“
-  https://www.nature.com/articles/s41562-024-02077-2
+
+- [Nature Human Behaviour (2024): „Large language models display moral divergence across model families and countries“](https://www.nature.com/articles/s41562-024-02077-2)
 
 ## Kernidee
-- Fallvignette: „Herr Herrmann“ (Demenz, Nahrungsverweigerung, Frage der PEG-Anlage).
+
+- Fallvignette: „Herr Herrmann“ (Demenz, Ablehnung der Nahrung, Patientenverfügung vorhanden, Erholung nach enteraler Ernährung über nasale Sonde, Frage der PEG-Anlage).
 - Gleiches Prompt-Set an mehrere Modelle (Cloud + lokal).
 - Separater Judge klassifiziert jede Antwort streng nach Schema (JSON) und vergibt einen Achsen-Score.
-- Drei Runs für Vergleichbarkeit:
+- Runs für Vergleichbarkeit:
   1) baseline (temperature=0.7, top_p=1.0)
   2) deterministic (temperature=0.0, top_p=0.1)
-  3) autonomy_bias (Systemprompt betont Autonomie; temperature≈0.2, top_p≈0.9)
+  3) care_bias (Systemprompt betont Fürsorge; temperature≈0.2, top_p≈0.9)
+  4) autonomy_bias (Systemprompt betont Autonomie; temperature≈0.2, top_p≈0.9)
 
 ## Ordnerstruktur
-```
+
+```text
 demenz_ethik_checker/
 ├─ cases/
 │  └─ herr_herrmann.txt
@@ -34,12 +38,16 @@ demenz_ethik_checker/
 │  ├─ models.yaml
 │  ├─ run_baseline.yaml
 │  ├─ run_deterministic.yaml
+│  ├─ run_care_bias.yaml
 │  └─ run_autonomy_bias.yaml
 ├─ outputs/
 │  ├─ baseline/
 │  │  ├─ results.csv
 │  │  └─ figures/axis.png
 │  ├─ deterministic/
+│  │  ├─ results.csv
+│  │  └─ figures/axis.png
+│  ├─ care_bias/
 │  │  ├─ results.csv
 │  │  └─ figures/axis.png
 │  └─ autonomy_bias/
@@ -56,21 +64,27 @@ demenz_ethik_checker/
 │  ├─ judge_gemini.py
 │  ├─ prompts.py
 │  ├─ orchestrator.py
-│  └─ viz.py
+│  ├─ viz.py
+│  ├─ compare.py                # Achsenvergleich (gruppierte Balken) über mehrere Runs
+│  └─ compare_decisions.py      # Entscheidungs-Grid + Entscheidungstabelle
 ├─ .env.example
 ├─ requirements.txt
 └─ run.py
 ```
 
 ## Installation (macOS, Python 3.11+)
-1) Repository klonen und ins Verzeichnis wechseln.
-2) Virtuelle Umgebung anlegen (hier: `myenv`):
+
+1. Repository klonen und ins Verzeichnis wechseln.
+2. Virtuelle Umgebung anlegen (hier: `myenv`):
+
 ```bash
 python3 -m venv myenv
 ./myenv/bin/python -m pip install --upgrade pip
 ./myenv/bin/pip install -r requirements.txt
 ```
-3) `.env` erstellen (aus `.env.example` kopieren) und ggf. Cloud‑Keys setzen:
+
+3. `.env` erstellen (aus `.env.example` kopieren) und ggf. Cloud‑Keys setzen:
+
 ```bash
 cp .env.example .env
 # In .env mindestens setzen, wenn Gemini-Judge genutzt werden soll:
@@ -80,16 +94,37 @@ cp .env.example .env
 ```
 
 ## Nutzung
+
 Runs starten:
+
 ```bash
 ./myenv/bin/python run.py --run baseline
 ./myenv/bin/python run.py --run deterministic
+./myenv/bin/python run.py --run care_bias
 ./myenv/bin/python run.py --run autonomy_bias
 ```
+
 Artefakte:
+
 - CSV: `outputs/<run>/results.csv`
 - Grafik: `outputs/<run>/figures/axis.png`
 - Optional: Rohantworten je Modell in `outputs/<run>/raw_opinions/`
+
+Zusätzliche Vergleichs-Visualisierungen (aus `docs/`):
+
+- Achsenvergleich (4 Balken pro Modell: Baseline, Deterministic, Care, Autonomy)
+  
+  ```bash
+  ./myenv/bin/python src/compare.py
+  ```
+  Ergebnis: `docs/axis_comparison.png`
+
+- Entscheidungsübersicht (Matrix PEG: Ja/Nein/Unklar) und Tabellen
+  
+  ```bash
+  ./myenv/bin/python src/compare_decisions.py
+  ```
+  Ergebnisse: `docs/decision_grid.png`, `docs/decision_table.csv`, `docs/decision_table.md`
 
 ### Beispiel: Baseline‑Ergebnis (Screenshot)
 
@@ -97,13 +132,32 @@ Damit der Screenshot im Repo sichtbar ist, liegt eine Kopie der Baseline‑Grafi
 
 ![Baseline Axis (Beispiel)](docs/axis_baseline.png)
 
+### Beispiel: Vergleich und Entscheidungsmatrix
+
+Gruppierter Balkenvergleich der Achsenwerte je Modell und Run:
+
+![Axis Comparison](docs/axis_comparison.png)
+
+Entscheidungen PEG (Ja/Nein/Unklar) je Modell und Run:
+
+![Decision Grid](docs/decision_grid.png)
+
+#### Entscheidungstabelle (CSV & Markdown)
+
+Die aus `src/compare_decisions.py` erzeugten Tabellen sind hier abgelegt:
+
+- CSV: [`docs/decision_table.csv`](docs/decision_table.csv)
+- Markdown: [`docs/decision_table.md`](docs/decision_table.md)
+
 CSV‑Spalten:
-```
+
+```text
 run, model, provider, judge_backend, temperature, top_p, max_tokens, system_style,
 opinion, decision, class, axis, why, latency_ms
 ```
 
 ## Judge-Backends
+
 - Lokal: `src/judge.py` (heuristisch, deterministisch)
 - Gemini: `src/judge_gemini.py` (Google Gemini, deterministisch mit temperature=0, JSON‑Schema)
   - Auswahl via `.env` → `JUDGE_BACKEND=gemini`
@@ -111,6 +165,7 @@ opinion, decision, class, axis, why, latency_ms
   - Hinweis: In unserer Referenzkonfiguration liefert `gemini-2.0-flash` stabile JSON‑Antworten; `gemini-2.5-flash` kann je nach SDK/Region variieren.
 
 ## Reproduzierbarkeit und Transparenz
+
 - Einheitliche Prompts (`src/prompts.py`).
 - Identische Token‑Budgets je Run (über `configs/run_*.yaml`).
 - Judge deterministisch (temperature=0) und modellunabhängig.
@@ -118,24 +173,31 @@ opinion, decision, class, axis, why, latency_ms
 - CSV enthält `judge_backend` zur Nachvollziehbarkeit.
 
 ## Hinweise zu lokalen Modellen (z. B. Teuken 7B)
+
 - `local_teuken.py` ist für lokale Inferenz vorgesehen (Adapter‑Schnittstelle wie alle anderen Adapter).
 - Performance: Auf einem Mac mit M2‑Chip kann ein Durchlauf (ein Prompt) **> 1 Stunde** dauern – abhängig von Engine/Quantisierung.
 - Bitte in der Adapter‑Datei und/oder README lokal dokumentieren, welche Engine/Parameter genutzt werden (z. B. llama.cpp, gguf‑Quant, Kontext, Threads).
 - Empfehlung: Für Demos den lokalen Teuken‑Adapter in `configs/models.yaml` vorerst deaktivieren oder stark limitieren.
 
 ## Architektur
+
 - Orchestrator (`src/orchestrator.py`) lädt Modelle, erzeugt die Meinungen und ruft den Judge, schreibt CSV und erzeugt Diagramme.
 - Adapter‑Schicht (`src/adapters/*`): Einheitliche Schnittstelle `generate(system, user, temperature, top_p, max_tokens)`.
 - Judge (`src/judge.py`, `src/judge_gemini.py`): `classify(text) → {axis, class, decision, justification}`.
-- Visualisierung (`src/viz.py`): Balkendiagramm der Achsenwerte pro Run.
+- Visualisierung (`src/viz.py`):
+  - `plot_axis(...)`: Balkendiagramm der Achsenwerte pro Run
+  - `plot_axis_comparison(...)`: gruppierte Balken für mehrere Runs
+  - `plot_decision_grid(...)`: Matrix der Entscheidungen (Ja/Nein/Unklar)
 - Konfigurationen in YAML (`configs/*.yaml`).
 
 ## Haftungsausschluss
+
 - Die Inhalte dieses Repos dienen ausschließlich Demonstrations‑ und Forschungszwecken.
 - Keine medizinische, rechtliche oder ethische Beratung.
 - Entscheidungen in der klinischen Praxis erfordern qualifiziertes Fachpersonal, institutionelle Leitlinien und interprofessionelle Abwägungen.
 
 ## Lizenz
+
 MIT License – siehe `LICENSE`.
 
 ## Autor

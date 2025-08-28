@@ -1,4 +1,5 @@
 run: deterministic
+case: herr_herrmann.txt
 params:
   temperature: 0.0
   top_p: 0.1

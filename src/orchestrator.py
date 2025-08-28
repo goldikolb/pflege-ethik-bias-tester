@@ -64,7 +64,8 @@ class Orchestrator:
         params = RunParams(**run_cfg["params"])
 
         sys_prompt = system_prompt(params.system_style)
-        case_text = load_case_text(str(self.root / "cases" / "herr_herrmann.txt"))
+        case_filename = run_cfg.get("case", "herr_herrmann.txt")
+        case_text = load_case_text(str(self.root / "cases" / case_filename))
         usr_prompt = user_prompt(case_text)
 
         models = self._load_models()

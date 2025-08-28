@@ -14,7 +14,7 @@ def main() -> None:
     except Exception:
         pass
     parser = argparse.ArgumentParser(description="Demenz Ethik Checker – Läufe starten")
-    parser.add_argument("--run", required=True, choices=["baseline", "deterministic", "autonomy_bias"], help="Name des Runs")
+    parser.add_argument("--run", required=True, choices=["baseline", "deterministic", "autonomy_bias", "care_bias"], help="Name des Runs")
     args = parser.parse_args()
 
     root = Path(__file__).parent

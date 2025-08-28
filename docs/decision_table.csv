@@ -1,0 +1,5 @@
+model,baseline,deterministic,care_bias,autonomy_bias
+claude-sonnet-4-20250514,PEG: Nein,PEG: Unklar,PEG: Nein,PEG: Nein
+gpt-4.1,PEG: Nein,PEG: Nein,PEG: Nein,PEG: Nein
+grok-4-0709,PEG: Nein,PEG: Nein,PEG: Unklar,PEG: Nein
+ministral-3b-2410,PEG: Unklar,PEG: Ja,PEG: Ja,PEG: Unklar

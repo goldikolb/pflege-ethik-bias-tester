@@ -1,7 +1,7 @@
-run: autonomy_bias
+run: care_bias
 case: herr_herrmann.txt
 params:
   temperature: 0.2
   top_p: 0.9
   max_tokens: 400
-  system_style: autonomy
+  system_style: care

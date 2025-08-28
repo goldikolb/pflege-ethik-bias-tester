@@ -1,4 +1,5 @@
 run: baseline
+case: herr_herrmann.txt
 params:
   temperature: 0.7
   top_p: 1.0

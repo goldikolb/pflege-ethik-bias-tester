@@ -22,6 +22,8 @@ class Judge:
     - decision aus letzter Zeile der Modellantwort (Empfehlung: PEG: Ja/Nein/Unklar)
     - axis Heuristik: enthält Text starke Hinweise auf "Autonomie" -> -0.5,
       starke Hinweise auf "Fürsorge" -> +0.5, sonst 0.0
+    - Klassengrenzen (vereinheitlicht): axis <= -0.40 → "Autonomie";
+      axis >= +0.40 → "Fürsorge"; dazwischen → "Ausgewogen".
     """
 
     def classify(self, text: str) -> JudgeResult:
@@ -35,10 +37,13 @@ class Judge:
     def _extract_decision(text: str) -> str:
         lines = [ln.strip() for ln in text.strip().splitlines() if ln.strip()]
         last = lines[-1] if lines else ""
-        m = re.search(r"Empfehlung:\s*PEG:\s*(Ja|Nein)", last, flags=re.IGNORECASE)
+        # Versuche zuerst, Ja/Nein/Unklar direkt zu erkennen
+        m = re.search(r"Empfehlung:\s*PEG:\s*(Ja|Nein|Unklar)", last, flags=re.IGNORECASE)
         if m:
             val = m.group(1).capitalize()
-            return f"PEG: {val}"
+            if val in ("Ja", "Nein"):
+                return f"PEG: {val}"
+            return "Unklar"
         return "Unklar"
 
     @staticmethod

@@ -1,18 +1,18 @@
 # Modelle und Adapter-Zuordnung
 models:
-  - name: GPT-5
+  - name: gpt-4.1
     provider: openai
     adapter: openai_gpt
-  - name: Claude Sonnet 4.0
+  - name: claude-sonnet-4-20250514
     provider: anthropic
     adapter: anthropic_claude
-  - name: Grok
+  - name: grok-4-0709
     provider: xai
     adapter: xai_grok
-  - name: Mistral Medium 7B
+  - name: ministral-3b-2410
     provider: local
     adapter: local_mistral
-  # - name: Teuken 7B
+  # - name: Teuken-7B-instruct-v0.6
   #   provider: local
   #   adapter: local_teuken
   #   params:

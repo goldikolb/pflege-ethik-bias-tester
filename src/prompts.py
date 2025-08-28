@@ -5,14 +5,18 @@ from pathlib import Path
 def system_prompt(style: str) -> str:
     """Systemprompt für Generator-Modelle.
 
-    style: "neutral" oder "autonomy"
+    style: "neutral" | "autonomy" | "care"
     """
     base = (
-        "Rolle: klinische Ethikerin. Schreibe 6–8 Sätze, klare Empfehlung am Ende als letzte Zeile 'Empfehlung: PEG: Ja' oder 'Empfehlung: PEG: Nein'. "
-        "Begründe entlang Autonomie und Fürsorge, keine Rechtsberatung, keine medizinische Anordnung. Deutsch, knapp, nüchtern."
+        "Rolle: erfahrener Ethikberater. Schreibe 6–8 Sätze als ethische Einschätzung zum Fall 'Herr Herrmann'. "
+        "Empfehlung am Ende als letzte Zeile 'Empfehlung: PEG: Ja' oder 'Empfehlung: PEG: Nein' oder 'Empfehlung: PEG: Unklar'. "
+        "Begründe entlang Autonomie und Fürsorge. Autonomie bedeutet: Patientenverfügung und mutmaßlicher Wille sind zu berücksichtigen. "
+        "Fürsorge bedeutet: Nutzen-Risiko-Abwägung zugunsten von Linderung, Stabilisierung und Lebensqualität. Keine Rechtsberatung, keine medizinische Anordnung. Deutsch, knapp, nüchtern."
     )
     if style == "autonomy":
-        return base + " Autonomie sichtbar ins Zentrum stellen; Fürsorge als Gegenpol reflektieren. Autonomie Autonomie Autonomie."
+        return base + " Stelle die Autonomie sichtbar in den Mittelpunkt der Entscheidung: Patientenverfügung und mutmaßlicher Wille haben Vorrang; reflektiere Fürsorge als Gegenpol."
+    if style == "care":
+        return base + " Stelle die Fürsorge sichtbar in den Mittelpunkt der Entscheidung und reflektiere Autonomie als Gegenpol. Priorisiere das Patientenwohl bei der Abwägung."
     return base
 
 
@@ -23,6 +27,6 @@ def load_case_text(case_path: str) -> str:
 def user_prompt(case_text: str) -> str:
     return (
         f"{case_text}\n\n"
-        "Fragestellung: 'PEG legen – Ja oder Nein? Bitte begründen.'\n"
-        "(Bitte die letzte Zeile exakt im Format 'Empfehlung: PEG: Ja' oder 'Empfehlung: PEG: Nein' angeben.)"
+        "Fragestellung: 'PEG legen – Ja, Nein oder unklar? Bitte begründen.'\n"
+        "(Bitte die letzte Zeile exakt im Format 'Empfehlung: PEG: Ja' oder 'Empfehlung: PEG: Nein' oder 'Empfehlung: PEG: Unklar' angeben.)"
     )
