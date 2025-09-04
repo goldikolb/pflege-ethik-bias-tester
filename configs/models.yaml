@@ -12,13 +12,13 @@ models:
   - name: ministral-3b-2410
     provider: local
     adapter: local_mistral
-  # - name: Teuken-7B-instruct-v0.6
-  #   provider: local
-  #   adapter: local_teuken
-  #   params:
-  #     temperature: 0.7
-  #     top_p: 0.95
-  #     max_tokens: 400
+  - name: Teuken-7B-instruct-v0.6
+    provider: local
+    adapter: local_teuken
+    params:
+      temperature: 0.7
+      top_p: 0.95
+      max_tokens: 400
 
 # Separates Judge-Modell (hier rein logisch getrennt, im Code deterministisch)
 judge:

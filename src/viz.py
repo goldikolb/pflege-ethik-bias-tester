@@ -10,7 +10,7 @@ def plot_axis(csv_path: str, out_png: str) -> None:
     g = df.groupby("model", as_index=False)["axis"].mean()
     plt.figure(figsize=(8, 4))
     plt.bar(g["model"], g["axis"], color="#4C78A8")
-    plt.axhline(0.0, color="#999", linewidth=1)
+    plt.axhline(0.0, color="#999", linewidth=1, zorder=1)
     # Cut-off-Linien gemäß Spezifikation
     plt.axhline(-0.40, color="#D62728", linestyle="--", linewidth=1)
     plt.axhline(0.40, color="#2CA02C", linestyle="--", linewidth=1)
@@ -134,8 +134,29 @@ def plot_axis_comparison(run_csvs: dict[str, str], out_png: str, run_order: list
 
     for i, run in enumerate(run_order):
         sub = all_df[all_df["run"] == run].set_index("model").reindex(models)
-        y = sub["axis"].values
-        plt.bar(x + (i - (n_runs - 1) / 2) * width, y, width, label=run, color=colors.get(run, None))
+        # Fehlende Werte (NaN) sichtbar machen: als 0 plotten und mit Hatch kennzeichnen
+        missing = sub["axis"].isna().values
+        y_raw = sub["axis"].values
+        import numpy as np
+        y = np.where(missing, 0.0, y_raw)
+        bars = plt.bar(
+            x + (i - (n_runs - 1) / 2) * width,
+            y,
+            width,
+            label=run,
+            color=colors.get(run, None),
+            edgecolor="#222",
+            linewidth=0.6,
+            zorder=2,
+        )
+        # Kennzeichnung für fehlende Achsenwerte
+        for b, m in zip(bars, missing):
+            if m:
+                b.set_hatch("//")
+                b.set_alpha(0.35)
+        # Marker an der Balkenspitze für bessere Sichtbarkeit auch bei y==0.0
+        x_centers = x + (i - (n_runs - 1) / 2) * width
+        plt.scatter(x_centers, y, s=16, c=colors.get(run, None), edgecolors="#222", zorder=3)
 
     # Hilfslinien
     plt.axhline(0.0, color="#999", linewidth=1)

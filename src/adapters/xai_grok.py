@@ -93,7 +93,7 @@ class XAIGrokAdapter(Adapter):
                 top_p=top_p if include_sampler else None,
                 max_tokens=max_tokens if include_max_tokens else None,
             )
-            with httpx.Client(timeout=30.0) as client:
+            with httpx.Client(timeout=45.0) as client:
                 return client.post(self.API_URL, headers=headers, json=payload)
 
         # Reihenfolge der Versuche (Primärmodell):
@@ -150,13 +150,21 @@ class XAIGrokAdapter(Adapter):
                 return content.strip()
             # 2) Liste von Blöcken mit text/content
             if isinstance(content, list):
-                parts = []
+                parts: list[str] = []
                 for blk in content:
-                    if isinstance(blk, dict):
-                        if isinstance(blk.get("text"), str):
-                            parts.append(blk["text"]) 
-                        elif isinstance(blk.get("content"), str):
-                            parts.append(blk["content"]) 
+                    if not isinstance(blk, dict):
+                        continue
+                    # Häufige Varianten: {text: str} | {content: str} | {type: 'text', text: {value: str}} | {type:'output_text', text: str}
+                    if isinstance(blk.get("text"), str):
+                        parts.append(blk["text"])  # direkt
+                    elif isinstance(blk.get("content"), str):
+                        parts.append(blk["content"])  # alternativ
+                    elif blk.get("type") in {"text", "output_text"}:
+                        t = blk.get("text")
+                        if isinstance(t, dict) and isinstance(t.get("value"), str):
+                            parts.append(t["value"])  # OpenAI-ähnlich: text.value
+                        elif isinstance(t, str):
+                            parts.append(t)
                 txt = "".join(parts).strip()
                 if txt:
                     return txt
@@ -164,10 +172,14 @@ class XAIGrokAdapter(Adapter):
             alt = data["choices"][0].get("text")
             if isinstance(alt, str) and alt.strip():
                 return alt.strip()
+            # 4) Weiterer Fallback: top-level output_text (manche Implementierungen)
+            ot = data.get("output_text")
+            if isinstance(ot, str) and ot.strip():
+                return ot.strip()
             # Wenn Chat-Completions leer blieb: Fallback auf Messages-Endpoint
             # (Anthropic-kompatibel)
             try:
-                with httpx.Client(timeout=30.0) as client:
+                with httpx.Client(timeout=45.0) as client:
                     msg_payload: Dict[str, Any] = {
                         "model": fallback_model,
                         "system": str(system),
@@ -185,7 +197,7 @@ class XAIGrokAdapter(Adapter):
                     except Exception:
                         snippet = "<no text>"
                     print(f"XAI /messages HTTP {r2.status_code}, snippet: {snippet}")
-                    return ""
+                    return "[xAI lieferte keinen Text]"
                 d2 = r2.json()
                 # Struktur laut Anthropic-kompatiblem Format: content ist Liste von Blocks
                 try:
@@ -211,6 +223,6 @@ class XAIGrokAdapter(Adapter):
             except Exception:
                 snippet = "<unavailable>"
             print(f"XAI chat/completions lieferte leer. Debug-Snippet: {snippet}")
-            return ""
+            return "[xAI lieferte keinen Text]"
         except Exception as e:
             raise RuntimeError(f"Unerwartetes XAI-Antwortformat: {data}") from e
