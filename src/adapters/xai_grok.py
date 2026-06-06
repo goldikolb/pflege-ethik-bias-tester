@@ -44,10 +44,14 @@ class XAIGrokAdapter(Adapter):
             payload["max_tokens"] = int(max_tokens)
         return payload
 
-    def generate(self, system: str, user: str, temperature: float, top_p: float, max_tokens: int) -> str:
+    def generate(
+        self, system: str, user: str, temperature: float, top_p: float, max_tokens: int
+    ) -> str:
         api_key = os.getenv("XAI_API_KEY")
         if not api_key:
-            raise RuntimeError("XAI_API_KEY fehlt. Bitte .env anlegen und Schlüssel setzen.")
+            raise RuntimeError(
+                "XAI_API_KEY fehlt. Bitte .env anlegen und Schlüssel setzen."
+            )
 
         headers = {
             "Content-Type": "application/json",
@@ -109,7 +113,9 @@ class XAIGrokAdapter(Adapter):
         ]
         resp = None
         for model_id, incl_sampler, incl_max in attempts:
-            r = _request(model_id, include_sampler=incl_sampler, include_max_tokens=incl_max)
+            r = _request(
+                model_id, include_sampler=incl_sampler, include_max_tokens=incl_max
+            )
             if r.status_code != 400 and r.status_code != 404:
                 resp = r
                 break
@@ -127,7 +133,9 @@ class XAIGrokAdapter(Adapter):
             ]
             fb_resp = None
             for model_id, incl_sampler, incl_max in fb_attempts:
-                r = _request(model_id, include_sampler=incl_sampler, include_max_tokens=incl_max)
+                r = _request(
+                    model_id, include_sampler=incl_sampler, include_max_tokens=incl_max
+                )
                 if r.status_code // 100 == 2:
                     fb_resp = r
                     break
@@ -185,9 +193,17 @@ class XAIGrokAdapter(Adapter):
                         "system": str(system),
                         "messages": [{"role": "user", "content": str(user)}],
                         # nur setzen, wenn sinnvoll
-                        **({"temperature": float(temperature)} if temperature is not None else {}),
+                        **(
+                            {"temperature": float(temperature)}
+                            if temperature is not None
+                            else {}
+                        ),
                         **({"top_p": float(top_p)} if top_p is not None else {}),
-                        **({"max_tokens": int(max_tokens)} if isinstance(max_tokens, int) else {}),
+                        **(
+                            {"max_tokens": int(max_tokens)}
+                            if isinstance(max_tokens, int)
+                            else {}
+                        ),
                     }
                     r2 = client.post(self.MSG_URL, headers=headers, json=msg_payload)
                 if r2.status_code // 100 != 2:

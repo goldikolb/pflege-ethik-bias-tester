@@ -1,0 +1,8 @@
+{
+  // Zeilenlänge nicht erzwingen – README/Changelog enthalten lange Links,
+  // Tabellen und Code-URLs, bei denen harte Umbrüche die Lesbarkeit verschlechtern.
+  "MD013": false,
+
+  // Issue-Templates beginnen mit YAML-Frontmatter statt H1 – das ist gewollt.
+  "MD041": false
+}

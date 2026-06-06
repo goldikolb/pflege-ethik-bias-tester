@@ -24,7 +24,9 @@ def plot_axis(csv_path: str, out_png: str) -> None:
     plt.close()
 
 
-def plot_decision_grid(run_csvs: dict[str, str], out_png: str, run_order: list[str] | None = None) -> None:
+def plot_decision_grid(
+    run_csvs: dict[str, str], out_png: str, run_order: list[str] | None = None
+) -> None:
     """Visualisiert die PEG-Entscheidung (Ja/Nein/Unklar) als Grid (Modelle × Runs).
 
     Farben: Ja=grün, Nein=rot, Unklar=grau.
@@ -65,7 +67,9 @@ def plot_decision_grid(run_csvs: dict[str, str], out_png: str, run_order: list[s
     for i in range(len(models)):
         for j in range(len(run_order)):
             code = grid[i, j]
-            plt.gca().add_patch(plt.Rectangle((j, i), 1, 1, color=colors.get(code, "#9A9A9A")))
+            plt.gca().add_patch(
+                plt.Rectangle((j, i), 1, 1, color=colors.get(code, "#9A9A9A"))
+            )
 
     # Achsen und Labels
     plt.xlim(0, len(run_order))
@@ -77,6 +81,7 @@ def plot_decision_grid(run_csvs: dict[str, str], out_png: str, run_order: list[s
     plt.title("Entscheidung je Modell und Run (PEG)")
     # Legende
     from matplotlib.patches import Patch
+
     legend_elems = [
         Patch(facecolor="#54A24B", label="PEG: Ja"),
         Patch(facecolor="#E45756", label="PEG: Nein"),
@@ -89,7 +94,9 @@ def plot_decision_grid(run_csvs: dict[str, str], out_png: str, run_order: list[s
     plt.close()
 
 
-def plot_axis_comparison(run_csvs: dict[str, str], out_png: str, run_order: list[str] | None = None) -> None:
+def plot_axis_comparison(
+    run_csvs: dict[str, str], out_png: str, run_order: list[str] | None = None
+) -> None:
     """Erzeugt einen gruppierten Balkenplot über mehrere Runs.
 
     run_csvs: Mapping von Run-Name -> Pfad zur results.csv
@@ -127,6 +134,7 @@ def plot_axis_comparison(run_csvs: dict[str, str], out_png: str, run_order: list
     }
 
     import numpy as np
+
     x = np.arange(n_models)
     width = 0.18 if n_runs >= 4 else 0.22
 
@@ -138,6 +146,7 @@ def plot_axis_comparison(run_csvs: dict[str, str], out_png: str, run_order: list
         missing = sub["axis"].isna().values
         y_raw = sub["axis"].values
         import numpy as np
+
         y = np.where(missing, 0.0, y_raw)
         bars = plt.bar(
             x + (i - (n_runs - 1) / 2) * width,
@@ -156,7 +165,9 @@ def plot_axis_comparison(run_csvs: dict[str, str], out_png: str, run_order: list
                 b.set_alpha(0.35)
         # Marker an der Balkenspitze für bessere Sichtbarkeit auch bei y==0.0
         x_centers = x + (i - (n_runs - 1) / 2) * width
-        plt.scatter(x_centers, y, s=16, c=colors.get(run, None), edgecolors="#222", zorder=3)
+        plt.scatter(
+            x_centers, y, s=16, c=colors.get(run, None), edgecolors="#222", zorder=3
+        )
 
     # Hilfslinien
     plt.axhline(0.0, color="#999", linewidth=1)

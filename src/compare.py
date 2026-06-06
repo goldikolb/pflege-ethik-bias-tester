@@ -17,11 +17,16 @@ def main() -> None:
     # Nur vorhandene CSVs berücksichtigen
     run_csvs = {k: v for k, v in DEFAULT_RUNS.items() if Path(v).exists()}
     if not run_csvs:
-        raise SystemExit("Keine results.csv-Dateien gefunden. Bitte zuerst Runs ausführen.")
+        raise SystemExit(
+            "Keine results.csv-Dateien gefunden. Bitte zuerst Runs ausführen."
+        )
 
     out_png = "docs/axis_comparison.png"
-    plot_axis_comparison(run_csvs, out_png=out_png,
-                         run_order=["baseline", "deterministic", "care_bias", "autonomy_bias"])
+    plot_axis_comparison(
+        run_csvs,
+        out_png=out_png,
+        run_order=["baseline", "deterministic", "care_bias", "autonomy_bias"],
+    )
     print(f"Vergleichsgrafik gespeichert in: {Path(out_png).resolve()}")
 
 

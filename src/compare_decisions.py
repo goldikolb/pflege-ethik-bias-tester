@@ -16,7 +16,9 @@ DEFAULT_RUNS: Dict[str, str] = {
 def main() -> None:
     run_csvs = {k: v for k, v in DEFAULT_RUNS.items() if Path(v).exists()}
     if not run_csvs:
-        raise SystemExit("Keine results.csv-Dateien gefunden. Bitte zuerst Runs ausführen.")
+        raise SystemExit(
+            "Keine results.csv-Dateien gefunden. Bitte zuerst Runs ausführen."
+        )
 
     out_png = "docs/decision_grid.png"
     plot_decision_grid(
@@ -34,8 +36,16 @@ def main() -> None:
     all_df = pd.concat(frames, ignore_index=True)
 
     # Pivot: Zeilen=Modelle, Spalten=Runs, Werte=Decision
-    pivot = all_df.pivot_table(index="model", columns="run", values="decision", aggfunc=lambda x: x.iloc[0])
-    pivot = pivot[[c for c in ["baseline", "deterministic", "care_bias", "autonomy_bias"] if c in pivot.columns]]
+    pivot = all_df.pivot_table(
+        index="model", columns="run", values="decision", aggfunc=lambda x: x.iloc[0]
+    )
+    pivot = pivot[
+        [
+            c
+            for c in ["baseline", "deterministic", "care_bias", "autonomy_bias"]
+            if c in pivot.columns
+        ]
+    ]
 
     # CSV
     out_csv = Path("docs/decision_table.csv")
@@ -53,7 +63,9 @@ def main() -> None:
     md_rows.append(sep)
     # Datenzeilen
     for model, row in pivot.iterrows():
-        cells = [model] + [str(row[c]) if c in row and pd.notna(row[c]) else "" for c in pivot.columns]
+        cells = [model] + [
+            str(row[c]) if c in row and pd.notna(row[c]) else "" for c in pivot.columns
+        ]
         md_rows.append("| " + " | ".join(cells) + " |")
 
     with out_md.open("w", encoding="utf-8") as f:

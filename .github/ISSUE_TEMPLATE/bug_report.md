@@ -25,12 +25,15 @@ Was sollte passieren?
 Was passiert stattdessen?
 
 ## Umgebung
+
 - OS: macOS / Linux / Windows
 - Python: 3.11+
 - Commit/Tag: (z. B. v0.1.0 oder SHA)
 
 ## Logs / Screenshots
+
 Füge relevante Ausgaben, Tracebacks oder Screens an.
 
 ## Zusatzinformationen
+
 Optional: weitere Hinweise.

@@ -1,5 +1,4 @@
 from __future__ import annotations
-from typing import Optional
 
 from .base import Adapter
 
@@ -74,7 +73,9 @@ class LocalTeukenAdapter(Adapter):
         nur eine User-Nachricht und betten den Systemtext vorne ein.
         """
         assert _TOKENIZER is not None and _MODEL is not None
-        combined = (system.strip() + "\n\n" if system and system.strip() else "") + user.strip()
+        combined = (
+            system.strip() + "\n\n" if system and system.strip() else ""
+        ) + user.strip()
         messages = [{"role": "User", "content": combined}]
 
         prompt_ids = _TOKENIZER.apply_chat_template(
@@ -86,7 +87,9 @@ class LocalTeukenAdapter(Adapter):
         )
         return prompt_ids
 
-    def generate(self, system: str, user: str, temperature: float, top_p: float, max_tokens: int) -> str:
+    def generate(
+        self, system: str, user: str, temperature: float, top_p: float, max_tokens: int
+    ) -> str:
         self._ensure_model()
         assert _MODEL is not None and _TOKENIZER is not None and _DEVICE is not None
 
@@ -117,7 +120,9 @@ class LocalTeukenAdapter(Adapter):
                     **gen_kwargs,
                 )
         except Exception as e:
-            raise RuntimeError(f"Fehler bei der lokalen Textgenerierung (Teuken): {e}") from e
+            raise RuntimeError(
+                f"Fehler bei der lokalen Textgenerierung (Teuken): {e}"
+            ) from e
 
         # Nur den neu erzeugten Teil dekodieren (ohne Prompt)
         try:
