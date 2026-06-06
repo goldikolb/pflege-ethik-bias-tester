@@ -77,11 +77,11 @@ demenz_ethik_checker/
 1. Repository klonen und ins Verzeichnis wechseln.
 2. Virtuelle Umgebung anlegen (hier: `myenv`):
 
-```bash
-python3 -m venv myenv
-./myenv/bin/python -m pip install --upgrade pip
-./myenv/bin/pip install -r requirements.txt
-```
+   ```bash
+   python3 -m venv myenv
+   ./myenv/bin/python -m pip install --upgrade pip
+   ./myenv/bin/pip install -r requirements.txt
+   ```
 
 3. `.env` erstellen (aus `.env.example` kopieren) und ggf. Cloud‑Keys setzen:
 
@@ -113,17 +113,19 @@ Artefakte:
 Zusätzliche Vergleichs-Visualisierungen (aus `docs/`):
 
 - Achsenvergleich (4 Balken pro Modell: Baseline, Deterministic, Care, Autonomy)
-  
+
   ```bash
   ./myenv/bin/python src/compare.py
   ```
+
   Ergebnis: `docs/axis_comparison.png`
 
 - Entscheidungsübersicht (Matrix PEG: Ja/Nein/Unklar) und Tabellen
-  
+
   ```bash
   ./myenv/bin/python src/compare_decisions.py
   ```
+
   Ergebnisse: `docs/decision_grid.png`, `docs/decision_table.csv`, `docs/decision_table.md`
 
 ### Beispiel: Baseline‑Ergebnis (Screenshot)

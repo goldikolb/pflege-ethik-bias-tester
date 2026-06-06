@@ -12,7 +12,9 @@ class LocalMistralAdapter(Adapter):
     Standardmodell: "ministral-3b-2410" (kleines, kostengünstiges Modell).
     """
 
-    def generate(self, system: str, user: str, temperature: float, top_p: float, max_tokens: int) -> str:
+    def generate(
+        self, system: str, user: str, temperature: float, top_p: float, max_tokens: int
+    ) -> str:
         api_key = os.getenv("MISTRAL_API_KEY")
         if not api_key:
             raise RuntimeError(

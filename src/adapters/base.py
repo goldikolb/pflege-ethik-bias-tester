@@ -6,7 +6,9 @@ from typing import Protocol
 class Adapter(Protocol):
     """Einheitliche Schnittstelle für alle Modelladapter."""
 
-    def generate(self, system: str, user: str, temperature: float, top_p: float, max_tokens: int) -> str:
+    def generate(
+        self, system: str, user: str, temperature: float, top_p: float, max_tokens: int
+    ) -> str:
         """Erzeugt einen Antworttext.
 
         Parameter:

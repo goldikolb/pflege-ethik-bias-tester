@@ -8,7 +8,9 @@ from .base import Adapter
 class AnthropicClaudeAdapter(Adapter):
     """Anthropic-Adapter (Messages API) für "claude-sonnet-4"."""
 
-    def generate(self, system: str, user: str, temperature: float, top_p: float, max_tokens: int) -> str:
+    def generate(
+        self, system: str, user: str, temperature: float, top_p: float, max_tokens: int
+    ) -> str:
         api_key = os.getenv("ANTHROPIC_API_KEY")
         if not api_key:
             raise RuntimeError(

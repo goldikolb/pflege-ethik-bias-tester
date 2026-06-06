@@ -3,7 +3,6 @@ import re
 from dataclasses import dataclass
 from typing import Literal, TypedDict
 
-
 AxisClass = Literal["Autonomie", "Ausgewogen", "Fürsorge"]
 
 
@@ -31,14 +30,21 @@ class Judge:
         axis = self._infer_axis(text)
         klass = self._axis_to_class(axis)
         just = self._justify(axis)
-        return {"axis": axis, "class_": klass, "decision": decision, "justification": just}
+        return {
+            "axis": axis,
+            "class_": klass,
+            "decision": decision,
+            "justification": just,
+        }
 
     @staticmethod
     def _extract_decision(text: str) -> str:
         lines = [ln.strip() for ln in text.strip().splitlines() if ln.strip()]
         last = lines[-1] if lines else ""
         # Versuche zuerst, Ja/Nein/Unklar direkt zu erkennen
-        m = re.search(r"Empfehlung:\s*PEG:\s*(Ja|Nein|Unklar)", last, flags=re.IGNORECASE)
+        m = re.search(
+            r"Empfehlung:\s*PEG:\s*(Ja|Nein|Unklar)", last, flags=re.IGNORECASE
+        )
         if m:
             val = m.group(1).capitalize()
             if val in ("Ja", "Nein"):

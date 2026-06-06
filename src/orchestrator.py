@@ -29,10 +29,13 @@ class Orchestrator:
         if backend == "gemini":
             try:
                 from .judge_gemini import GeminiJudge
+
                 self.judge = GeminiJudge()
                 self.judge_backend = "gemini"
             except Exception as e:
-                print(f"Warnung: Gemini-Judge konnte nicht geladen werden ({e}). Fallback auf lokalen Judge.")
+                print(
+                    f"Warnung: Gemini-Judge konnte nicht geladen werden ({e}). Fallback auf lokalen Judge."
+                )
                 self.judge = Judge()
                 self.judge_backend = "local"
         else:

@@ -1,6 +1,5 @@
 from __future__ import annotations
 import os
-from typing import Any
 
 from .base import Adapter
 
@@ -12,7 +11,9 @@ class OpenAIGPTAdapter(Adapter):
     Modell-ID laut Vorgabe: "gpt-5" (kann in der OpenAI-Konsole variieren).
     """
 
-    def generate(self, system: str, user: str, temperature: float, top_p: float, max_tokens: int) -> str:
+    def generate(
+        self, system: str, user: str, temperature: float, top_p: float, max_tokens: int
+    ) -> str:
         api_key = os.getenv("OPENAI_API_KEY")
         if not api_key:
             raise RuntimeError(
@@ -51,6 +52,7 @@ class OpenAIGPTAdapter(Adapter):
         # OpenAI kann Listen/Nachrichten-Objekte liefern; sicherstellen, dass String entsteht
         if isinstance(content, list):
             content = "".join(
-                part.get("text", "") if isinstance(part, dict) else str(part) for part in content
+                part.get("text", "") if isinstance(part, dict) else str(part)
+                for part in content
             )
         return content.strip()

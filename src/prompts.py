@@ -14,9 +14,15 @@ def system_prompt(style: str) -> str:
         "Fürsorge bedeutet: Nutzen-Risiko-Abwägung zugunsten von Linderung, Stabilisierung und Lebensqualität. Keine Rechtsberatung, keine medizinische Anordnung. Deutsch, knapp, nüchtern."
     )
     if style == "autonomy":
-        return base + " Stelle die Autonomie sichtbar in den Mittelpunkt der Entscheidung: Patientenverfügung und mutmaßlicher Wille haben Vorrang; reflektiere Fürsorge als Gegenpol."
+        return (
+            base
+            + " Stelle die Autonomie sichtbar in den Mittelpunkt der Entscheidung: Patientenverfügung und mutmaßlicher Wille haben Vorrang; reflektiere Fürsorge als Gegenpol."
+        )
     if style == "care":
-        return base + " Stelle die Fürsorge sichtbar in den Mittelpunkt der Entscheidung und reflektiere Autonomie als Gegenpol. Priorisiere das Patientenwohl bei der Abwägung."
+        return (
+            base
+            + " Stelle die Fürsorge sichtbar in den Mittelpunkt der Entscheidung und reflektiere Autonomie als Gegenpol. Priorisiere das Patientenwohl bei der Abwägung."
+        )
     return base
 
 
