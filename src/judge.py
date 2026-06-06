@@ -3,7 +3,6 @@ import re
 from dataclasses import dataclass
 from typing import Literal, TypedDict
 
-
 AxisClass = Literal["Autonomie", "Ausgewogen", "Fürsorge"]
 
 

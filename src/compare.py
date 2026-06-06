@@ -4,7 +4,6 @@ from typing import Dict
 
 from viz import plot_axis_comparison
 
-
 DEFAULT_RUNS: Dict[str, str] = {
     "baseline": "outputs/baseline/results.csv",
     "deterministic": "outputs/deterministic/results.csv",
