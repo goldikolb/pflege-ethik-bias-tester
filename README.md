@@ -1,3 +1,5 @@
+<!-- markdownlint-disable MD013 -->
+
 # Ethik Bias Tester
 
 Ein rein backend-basiertes Python-Tool, das sichtbar macht, dass verschiedene Sprachmodelle ein und denselben klinisch-ethischen Fall (hier: PEG-Anlage bei fortgeschrittener Demenz) unterschiedlich bewerten. Ein separates, deterministisches Judge-Modul ordnet jede Modellantwort auf einer Ethik-Achse ein:

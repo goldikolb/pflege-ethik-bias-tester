@@ -1,3 +1,5 @@
+<!-- markdownlint-disable MD013 -->
+
 ---
 name: Bug Report
 about: Melde einen Fehler

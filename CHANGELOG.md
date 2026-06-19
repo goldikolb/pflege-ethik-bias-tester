@@ -1,3 +1,5 @@
+<!-- markdownlint-disable MD013 -->
+
 # Changelog
 
 Alle nennenswerten Änderungen dieses Projekts werden in dieser Datei dokumentiert.
